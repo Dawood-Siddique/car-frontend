@@ -1,0 +1,115 @@
+export interface Car {
+  id: string;
+  brand: string;
+  model: string;
+  year: number;
+  price: number;
+  mileage: number;
+  fuelType: 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid';
+  transmission: 'Manual' | 'Automatic';
+  bodyType: 'Sedan' | 'SUV' | 'Hatchback' | 'Coupe' | 'Convertible' | 'Pickup';
+  color: string;
+  image: string;
+  description: string;
+  features: string[];
+  location: string;
+}
+
+export const cars: Car[] = [
+  {
+    id: '1',
+    brand: 'BMW',
+    model: '3 Series',
+    year: 2022,
+    price: 45000,
+    mileage: 15000,
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    bodyType: 'Sedan',
+    color: 'Black',
+    image: 'https://images.unsplash.com/photo-1722088354078-89415751076c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBzZWRhbnxlbnwxfHx8fDE3NTgzMTIwNjN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Luxurious BMW 3 Series with premium interior and excellent performance. Well maintained by single owner.',
+    features: ['Leather Seats', 'Navigation System', 'Parking Sensors', 'Bluetooth', 'Cruise Control', 'Sunroof'],
+    location: 'New York, NY'
+  },
+  {
+    id: '2',
+    brand: 'Ferrari',
+    model: 'F8 Tributo',
+    year: 2021,
+    price: 280000,
+    mileage: 5000,
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    bodyType: 'Coupe',
+    color: 'Red',
+    image: 'https://images.unsplash.com/photo-1653047256226-5abbfa82f1d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcG9ydHMlMjBjYXIlMjByZWR8ZW58MXx8fHwxNzU4MjUwNDkzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Stunning Ferrari F8 Tributo in pristine condition. Track-ready performance with street comfort.',
+    features: ['Carbon Fiber Interior', 'Racing Seats', 'Premium Sound System', 'Track Mode', 'Launch Control'],
+    location: 'Los Angeles, CA'
+  },
+  {
+    id: '3',
+    brand: 'Range Rover',
+    model: 'Sport',
+    year: 2023,
+    price: 95000,
+    mileage: 8000,
+    fuelType: 'Diesel',
+    transmission: 'Automatic',
+    bodyType: 'SUV',
+    color: 'Black',
+    image: 'https://images.unsplash.com/photo-1615051050993-9502ba54aeff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzdXYlMjBibGFja3xlbnwxfHx8fDE3NTgzMDI4MDR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Luxury SUV with off-road capabilities and premium features. Perfect for city and adventure.',
+    features: ['4WD', 'Air Suspension', 'Panoramic Roof', 'Premium Audio', 'Heated Seats', 'Terrain Response'],
+    location: 'Miami, FL'
+  },
+  {
+    id: '4',
+    brand: 'Volkswagen',
+    model: 'Golf',
+    year: 2020,
+    price: 22000,
+    mileage: 35000,
+    fuelType: 'Petrol',
+    transmission: 'Manual',
+    bodyType: 'Hatchback',
+    color: 'White',
+    image: 'https://images.unsplash.com/photo-1702416197021-b24131ab8232?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXRjaGJhY2slMjBjaXR5JTIwY2FyfGVufDF8fHx8MTc1ODMxNzYxNHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Reliable and efficient Volkswagen Golf. Perfect city car with great fuel economy.',
+    features: ['Digital Dashboard', 'Apple CarPlay', 'Parking Assist', 'LED Lights', 'Multi-zone AC'],
+    location: 'Chicago, IL'
+  },
+  {
+    id: '5',
+    brand: 'Ford',
+    model: 'F-150',
+    year: 2022,
+    price: 55000,
+    mileage: 20000,
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    bodyType: 'Pickup',
+    color: 'Blue',
+    image: 'https://images.unsplash.com/photo-1649793395985-967862a3b73f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwaWNrdXAlMjB0cnVja3xlbnwxfHx8fDE3NTgzMDIyODd8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Powerful Ford F-150 pickup truck. Great for work and recreation with impressive towing capacity.',
+    features: ['4WD', 'Tow Package', 'Bed Liner', 'Running Boards', 'Backup Camera', 'Work Lights'],
+    location: 'Houston, TX'
+  },
+  {
+    id: '6',
+    brand: 'Porsche',
+    model: '911 Cabriolet',
+    year: 2023,
+    price: 135000,
+    mileage: 3000,
+    fuelType: 'Petrol',
+    transmission: 'Automatic',
+    bodyType: 'Convertible',
+    color: 'Silver',
+    image: 'https://images.unsplash.com/photo-1571640710908-0a9b5e7bf483?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb252ZXJ0aWJsZSUyMHNwb3J0cyUyMGNhcnxlbnwxfHx8fDE3NTgyNDcxNjR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+    description: 'Beautiful Porsche 911 Cabriolet with top-down driving experience. Low mileage and pristine condition.',
+    features: ['Convertible Top', 'Sport Exhaust', 'Premium Leather', 'PASM', 'Sport Chrono Package'],
+    location: 'San Francisco, CA'
+  }
+];
