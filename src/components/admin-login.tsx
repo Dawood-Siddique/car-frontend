@@ -16,7 +16,7 @@ export function AdminLogin() {
     e.preventDefault();
 
     // Simple authentication (in real app, this would be secure)
-    if (username === 'admin' && password === 'admin123') {
+    if (username === 'admin' && password === 'admin') {
       login();
       navigate('/admin/dashboard');
       setError('');
@@ -69,11 +69,6 @@ export function AdminLogin() {
             </div>
           </form>
           
-          <div className="mt-4 p-3 bg-gray-100 rounded text-sm">
-            <p><strong>Demo Credentials:</strong></p>
-            <p>Username: admin</p>
-            <p>Password: admin123</p>
-          </div>
         </CardContent>
       </Card>
     </div>

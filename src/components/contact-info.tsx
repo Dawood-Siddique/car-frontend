@@ -120,12 +120,6 @@ export function ContactInfo() {
               Email
             </Button>
           </div>
-          
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
-            <p className="text-center text-sm text-blue-800">
-              <strong>Special Offer:</strong> Pay only 40% upfront and get free delivery to your location!
-            </p>
-          </div>
         </div>
       </div>
     </div>

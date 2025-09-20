@@ -27,17 +27,6 @@ export function CarList({ cars }: CarListProps) {
     <div className="max-w-7xl mx-auto p-6">
       {/* Header */}
       <div className="text-center mb-8 relative">
-        <div className="absolute top-0 right-0">
-          <Button
-            onClick={() => navigate('/admin/login')}
-            variant="outline"
-            size="sm"
-            className="gap-2"
-          >
-            <ShieldCheck className="w-4 h-4" />
-            Admin Login
-          </Button>
-        </div>
         <h1 className="text-4xl mb-4">Find Your Perfect Car</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
           Browse through our extensive collection of quality used cars. 
