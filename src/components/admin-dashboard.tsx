@@ -228,9 +228,6 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
         <div className="flex justify-between items-center mb-8">
           <h1>Admin Dashboard</h1>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate('/')}>
-              Back to Site
-            </Button>
             <Button variant="outline" onClick={() => {
               logout();
               navigate('/');
