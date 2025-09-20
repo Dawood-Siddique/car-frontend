@@ -1,24 +1,24 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
-interface AdminLoginProps {
-  onLogin: (success: boolean) => void;
-  onBack: () => void;
-}
-
-export function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
+export function AdminLogin() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Simple authentication (in real app, this would be secure)
     if (username === 'admin' && password === 'admin123') {
-      onLogin(true);
+      login();
+      navigate('/admin/dashboard');
       setError('');
     } else {
       setError('Invalid credentials. Use: admin / admin123');
@@ -63,7 +63,7 @@ export function AdminLogin({ onLogin, onBack }: AdminLoginProps) {
               <Button type="submit" className="flex-1">
                 Login
               </Button>
-              <Button type="button" variant="outline" onClick={onBack}>
+              <Button type="button" variant="outline" onClick={() => navigate('/')}>
                 Back
               </Button>
             </div>

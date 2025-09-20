@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -10,11 +12,11 @@ import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-reac
 interface AdminDashboardProps {
   cars: Car[];
   onCarsUpdate: (cars: Car[]) => void;
-  onLogout: () => void;
-  onBackToSite: () => void;
 }
 
-export function AdminDashboard({ cars, onCarsUpdate, onLogout, onBackToSite }: AdminDashboardProps) {
+export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -226,10 +228,13 @@ export function AdminDashboard({ cars, onCarsUpdate, onLogout, onBackToSite }: A
         <div className="flex justify-between items-center mb-8">
           <h1>Admin Dashboard</h1>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onBackToSite}>
+            <Button variant="outline" onClick={() => navigate('/')}>
               Back to Site
             </Button>
-            <Button variant="outline" onClick={onLogout}>
+            <Button variant="outline" onClick={() => {
+              logout();
+              navigate('/');
+            }}>
               Logout
             </Button>
           </div>

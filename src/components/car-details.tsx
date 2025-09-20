@@ -1,24 +1,39 @@
+import { useParams, useNavigate } from 'react-router-dom';
 import { Car } from '../data/cars';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { ContactButtons } from './contact-buttons';
-import { 
-  Calendar, 
-  Fuel, 
-  Gauge, 
-  MapPin, 
-  Palette, 
-  Settings, 
+import {
+  Calendar,
+  Fuel,
+  Gauge,
+  MapPin,
+  Palette,
+  Settings,
   Car as CarIcon,
-  ArrowLeft 
+  ArrowLeft
 } from 'lucide-react';
 
 interface CarDetailsProps {
-  car: Car;
-  onBack: () => void;
+  cars: Car[];
 }
 
-export function CarDetails({ car, onBack }: CarDetailsProps) {
+export function CarDetails({ cars }: CarDetailsProps) {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+
+  const car = cars.find(c => c.id === id);
+
+  if (!car) {
+    return (
+      <div className="max-w-6xl mx-auto p-6">
+        <p>Car not found</p>
+        <Button onClick={() => navigate('/')}>
+          Back to Listings
+        </Button>
+      </div>
+    );
+  }
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -33,8 +48,8 @@ export function CarDetails({ car, onBack }: CarDetailsProps) {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <Button 
-        onClick={onBack}
+      <Button
+        onClick={() => navigate('/')}
         variant="outline"
         className="mb-6"
       >

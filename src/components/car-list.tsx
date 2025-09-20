@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CarFilters } from './car-filters';
 import { CarCard } from './car-card';
 import { ContactInfo } from './contact-info';
@@ -7,12 +8,11 @@ import { Car } from '../data/cars';
 import { ShieldCheck } from 'lucide-react';
 
 interface CarListProps {
-  onCarSelect: (carId: string) => void;
-  onAdminLogin: () => void;
   cars: Car[];
 }
 
-export function CarList({ onCarSelect, onAdminLogin, cars }: CarListProps) {
+export function CarList({ cars }: CarListProps) {
+  const navigate = useNavigate();
   const [filteredCars, setFilteredCars] = useState<Car[]>(cars);
 
   const handleFilterChange = (newFilteredCars: Car[]) => {
@@ -28,8 +28,8 @@ export function CarList({ onCarSelect, onAdminLogin, cars }: CarListProps) {
       {/* Header */}
       <div className="text-center mb-8 relative">
         <div className="absolute top-0 right-0">
-          <Button 
-            onClick={onAdminLogin}
+          <Button
+            onClick={() => navigate('/admin/login')}
             variant="outline"
             size="sm"
             className="gap-2"
@@ -59,10 +59,9 @@ export function CarList({ onCarSelect, onAdminLogin, cars }: CarListProps) {
       {filteredCars.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
           {filteredCars.map((car) => (
-            <CarCard 
-              key={car.id} 
-              car={car} 
-              onViewDetails={onCarSelect}
+            <CarCard
+              key={car.id}
+              car={car}
             />
           ))}
         </div>

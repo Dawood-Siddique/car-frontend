@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Car } from '../data/cars';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
@@ -6,10 +7,10 @@ import { Calendar, Fuel, Gauge, MapPin, Palette } from 'lucide-react';
 
 interface CarCardProps {
   car: Car;
-  onViewDetails: (carId: string) => void;
 }
 
-export function CarCard({ car, onViewDetails }: CarCardProps) {
+export function CarCard({ car }: CarCardProps) {
+  const navigate = useNavigate();
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -84,8 +85,8 @@ export function CarCard({ car, onViewDetails }: CarCardProps) {
       </CardContent>
 
       <CardFooter className="p-4 pt-0">
-        <Button 
-          onClick={() => onViewDetails(car.id)} 
+        <Button
+          onClick={() => navigate(`/car/${car.id}`)}
           className="w-full"
         >
           View Details
