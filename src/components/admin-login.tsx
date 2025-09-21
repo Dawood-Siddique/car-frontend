@@ -4,24 +4,33 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { login as authLogin } from '@/services/auth';
 
 export function AdminLogin() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError('');
 
-    // Simple authentication (in real app, this would be secure)
-    if (username === 'admin' && password === 'admin') {
-      login();
+    try {
+      const response = await authLogin({ email, password });
+      // Assuming response has access_token and refresh_token
+      login({
+        access_token: response.access_token,
+        refresh_token: response.refresh_token,
+      });
       navigate('/admin/dashboard');
-      setError('');
-    } else {
-      setError('Invalid credentials. Use: admin / admin123');
+    } catch (err: any) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,12 +43,12 @@ export function AdminLogin() {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block mb-2">Username</label>
+              <label className="block mb-2">Email</label>
               <Input
                 type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email"
                 required
               />
             </div>
@@ -60,10 +69,10 @@ export function AdminLogin() {
             )}
             
             <div className="flex gap-2">
-              <Button type="submit" className="flex-1">
-                Login
+              <Button type="submit" className="flex-1" disabled={loading}>
+                {loading ? 'Logging in...' : 'Login'}
               </Button>
-              <Button type="button" variant="outline" onClick={() => navigate('/')}>
+              <Button type="button" variant="outline" onClick={() => navigate('/')} disabled={loading}>
                 Back
               </Button>
             </div>
