@@ -192,6 +192,15 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    console.log('Access token at submit:', accessToken);
+
+    if (!accessToken) {
+      alert('Your session has expired. Please log in again.');
+      logout();
+      navigate('/admin/login');
+      return;
+    }
+
     const carData = {
       brand: formData.brand,
       model: formData.model,
@@ -216,7 +225,8 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
         onCarsUpdate(updatedCars);
       } catch (error) {
         console.error('Failed to update car:', error);
-        alert('Failed to update car. Please try again.');
+        console.error('Error details:', error);
+        alert(`Failed to update car: ${error instanceof Error ? error.message : 'Unknown error'}`);
         return;
       }
     } else {
@@ -225,7 +235,8 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
         onCarsUpdate([...cars, newCar]);
       } catch (error) {
         console.error('Failed to create car:', error);
-        alert('Failed to add car. Please try again.');
+        console.error('Error details:', error);
+        alert(`Failed to add car: ${error instanceof Error ? error.message : 'Unknown error'}`);
         return;
       }
     }

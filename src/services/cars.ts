@@ -28,7 +28,7 @@ export const createCar = async (carData: Omit<Car, 'id'>, accessToken: string): 
   });
 
   if (!response.ok) {
-    throw new Error('Failed to create car');
+    throw new Error(`Failed to create car: ${response.status} ${response.statusText}`);
   }
 
   return response.json();
@@ -45,7 +45,7 @@ export const updateCar = async (carData: Car, accessToken: string): Promise<Car>
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update car');
+    throw new Error(`Failed to update car: ${response.status} ${response.statusText}`);
   }
 
   return response.json();
