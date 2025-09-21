@@ -8,32 +8,53 @@ import { Car } from '@/types';
 import { ShieldCheck } from 'lucide-react';
 import { fetchCars } from '../services/cars';
 
-export function CarList() {
+interface CarListProps {
+  cars?: Car[];
+  loading?: boolean;
+  error?: string | null;
+}
+
+export function CarList({ cars: propCars, loading: propLoading, error: propError }: CarListProps) {
   const navigate = useNavigate();
-  const [cars, setCars] = useState<Car[]>([]);
-  const [filteredCars, setFilteredCars] = useState<Car[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [cars, setCars] = useState<Car[]>(propCars || []);
+  const [filteredCars, setFilteredCars] = useState<Car[]>(propCars || []);
+  const [loading, setLoading] = useState<boolean>(propLoading !== undefined ? propLoading : true);
+  const [error, setError] = useState<string | null>(propError || null);
 
   const handleFilterChange = (newFilteredCars: Car[]) => {
     setFilteredCars(newFilteredCars);
   };
 
   useEffect(() => {
-    const loadCars = async () => {
-      try {
-        const fetchedCars = await fetchCars();
-        setCars(fetchedCars);
-        setFilteredCars(fetchedCars);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load cars');
-      } finally {
-        setLoading(false);
-      }
-    };
+    if (propCars) {
+      setCars(propCars);
+      setFilteredCars(propCars);
+      setLoading(false);
+      setError(null);
+    } else {
+      const loadCars = async () => {
+        try {
+          const fetchedCars = await fetchCars();
+          setCars(fetchedCars);
+          setFilteredCars(fetchedCars);
+        } catch (err) {
+          setError(err instanceof Error ? err.message : 'Failed to load cars');
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    loadCars();
-  }, []);
+      loadCars();
+    }
+  }, [propCars]);
+
+  useEffect(() => {
+    setLoading(propLoading !== undefined ? propLoading : loading);
+  }, [propLoading]);
+
+  useEffect(() => {
+    setError(propError || null);
+  }, [propError]);
 
   if (loading) {
     return (
