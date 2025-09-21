@@ -4,24 +4,57 @@ import { CarFilters } from './car-filters';
 import { CarCard } from './car-card';
 import { ContactInfo } from './contact-info';
 import { Button } from './ui/button';
-import { Car } from '../data/cars';
+import { Car } from '@/types';
 import { ShieldCheck } from 'lucide-react';
+import { fetchCars } from '../services/cars';
 
-interface CarListProps {
-  cars: Car[];
-}
-
-export function CarList({ cars }: CarListProps) {
+export function CarList() {
   const navigate = useNavigate();
-  const [filteredCars, setFilteredCars] = useState<Car[]>(cars);
+  const [cars, setCars] = useState<Car[]>([]);
+  const [filteredCars, setFilteredCars] = useState<Car[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const handleFilterChange = (newFilteredCars: Car[]) => {
     setFilteredCars(newFilteredCars);
   };
 
   useEffect(() => {
-    setFilteredCars(cars);
-  }, [cars]);
+    const loadCars = async () => {
+      try {
+        const fetchedCars = await fetchCars();
+        setCars(fetchedCars);
+        setFilteredCars(fetchedCars);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load cars');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCars();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">Loading cars...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="text-center py-12">
+          <p className="text-red-500 mb-4">Error: {error}</p>
+          <p className="text-muted-foreground">Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -29,7 +62,7 @@ export function CarList({ cars }: CarListProps) {
       <div className="text-center mb-8 relative">
         <h1 className="text-4xl mb-4">Find Your Perfect Car</h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Browse through our extensive collection of quality used cars. 
+          Browse through our extensive collection of quality used cars.
           Filter by brand, price, and features to find exactly what you're looking for.
         </p>
       </div>

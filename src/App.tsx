@@ -5,7 +5,7 @@ import { CarDetails } from './components/car-details';
 import { AdminLogin } from './components/admin-login';
 import { AdminDashboard } from './components/admin-dashboard';
 import { cars as initialCars } from './data/cars';
-import { Car } from './data/cars';
+import { type Car } from './types';
 import { useState } from 'react';
 
 export default function App() {
@@ -20,7 +20,7 @@ export default function App() {
       <AuthProvider>
         <div className="min-h-screen bg-gray-50">
           <Routes>
-            <Route path="/" element={<CarList cars={cars} />} />
+            <Route path="/" element={<CarList />} />
             <Route path="/car/:id" element={<CarDetails cars={cars} />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin/dashboard" element={<AdminDashboard cars={cars} onCarsUpdate={handleCarsUpdate} />} />
