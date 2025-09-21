@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Car } from '../data/cars';
+import { type Car } from '@/types';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { ContactButtons } from './contact-buttons';
