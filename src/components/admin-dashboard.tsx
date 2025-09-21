@@ -16,7 +16,13 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, isAdminLoggedIn } = useAuth();
+
+  useEffect(() => {
+    if (!isAdminLoggedIn) {
+      navigate('/admin/login');
+    }
+  }, [isAdminLoggedIn, navigate]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCar, setEditingCar] = useState<Car | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -191,9 +197,9 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
       year: parseInt(formData.year),
       price: parseInt(formData.price),
       mileage: parseInt(formData.mileage),
-      fuelType: formData.fuelType,
-      transmission: formData.transmission,
-      bodyType: formData.bodyType,
+      fuelType: formData.fuelType as Car['fuelType'],
+      transmission: formData.transmission as Car['transmission'],
+      bodyType: formData.bodyType as Car['bodyType'],
       color: formData.color,
       location: formData.location,
       description: formData.description,
@@ -359,12 +365,12 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                 
                 <div>
                   <label className="block mb-2">Fuel Type</label>
-                  <Select value={formData.fuelType} onValueChange={(value) => setFormData(prev => ({ ...prev, fuelType: value }))}>
+                  <Select value={formData.fuelType} onValueChange={(value: Car['fuelType']) => setFormData(prev => ({ ...prev, fuelType: value }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Gasoline">Gasoline</SelectItem>
+                      <SelectItem value="Petrol">Petrol</SelectItem>
                       <SelectItem value="Diesel">Diesel</SelectItem>
                       <SelectItem value="Electric">Electric</SelectItem>
                       <SelectItem value="Hybrid">Hybrid</SelectItem>
@@ -374,7 +380,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                 
                 <div>
                   <label className="block mb-2">Transmission</label>
-                  <Select value={formData.transmission} onValueChange={(value) => setFormData(prev => ({ ...prev, transmission: value }))}>
+                  <Select value={formData.transmission} onValueChange={(value: Car['transmission']) => setFormData(prev => ({ ...prev, transmission: value }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
@@ -387,7 +393,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                 
                 <div>
                   <label className="block mb-2">Body Type</label>
-                  <Select value={formData.bodyType} onValueChange={(value) => setFormData(prev => ({ ...prev, bodyType: value }))}>
+                  <Select value={formData.bodyType} onValueChange={(value: Car['bodyType']) => setFormData(prev => ({ ...prev, bodyType: value }))}>
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
