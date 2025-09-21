@@ -16,3 +16,37 @@ export const fetchCars = async (): Promise<Car[]> => {
   const data = await response.json();
   return data;
 };
+
+export const createCar = async (carData: Omit<Car, 'id'>, accessToken: string): Promise<Car> => {
+  const response = await fetch(`${API_URL}api/cars/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(carData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create car');
+  }
+
+  return response.json();
+};
+
+export const updateCar = async (carData: Car, accessToken: string): Promise<Car> => {
+  const response = await fetch(`${API_URL}api/cars/`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(carData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update car');
+  }
+
+  return response.json();
+};

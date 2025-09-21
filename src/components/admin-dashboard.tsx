@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { type Car } from '@/types';
 import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-react';
+import { createCar, updateCar } from '../services/cars';
 
 interface AdminDashboardProps {
   cars: Car[];
@@ -16,7 +17,7 @@ interface AdminDashboardProps {
 
 export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
   const navigate = useNavigate();
-  const { logout, isAdminLoggedIn } = useAuth();
+  const { logout, isAdminLoggedIn, accessToken } = useAuth();
 
   useEffect(() => {
     if (!isAdminLoggedIn) {
@@ -188,9 +189,9 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const carData = {
       brand: formData.brand,
       model: formData.model,
@@ -208,20 +209,25 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     };
 
     if (editingCar) {
-      // Edit existing car
-      const updatedCars = cars.map(car => 
-        car.id === editingCar.id 
-          ? { ...carData, id: editingCar.id }
-          : car
-      );
-      onCarsUpdate(updatedCars);
+      const fullCarData = { ...carData, id: editingCar.id };
+      try {
+        const updatedCar = await updateCar(fullCarData, accessToken!);
+        const updatedCars = cars.map(car => car.id === editingCar.id ? updatedCar : car);
+        onCarsUpdate(updatedCars);
+      } catch (error) {
+        console.error('Failed to update car:', error);
+        alert('Failed to update car. Please try again.');
+        return;
+      }
     } else {
-      // Add new car
-      const newCar = {
-        ...carData,
-        id: Date.now().toString()
-      };
-      onCarsUpdate([...cars, newCar]);
+      try {
+        const newCar = await createCar(carData, accessToken!);
+        onCarsUpdate([...cars, newCar]);
+      } catch (error) {
+        console.error('Failed to create car:', error);
+        alert('Failed to add car. Please try again.');
+        return;
+      }
     }
 
     setIsDialogOpen(false);
