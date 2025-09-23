@@ -17,6 +17,25 @@ export const fetchCars = async (): Promise<Car[]> => {
   return data;
 };
 
+export const uploadImage = async (file: File, accessToken: string): Promise<{ id: string; url: string }> => {
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(`${API_URL}api/cars/image/`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to upload image: ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
 export const createCar = async (carData: Omit<Car, 'id'>, accessToken: string): Promise<Car> => {
   const response = await fetch(`${API_URL}api/cars/`, {
     method: 'POST',

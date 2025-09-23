@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { type Car } from '@/types';
 import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-react';
-import { createCar, updateCar } from '../services/cars';
+import { createCar, updateCar, uploadImage } from '../services/cars';
 
 interface AdminDashboardProps {
   cars: Car[];
@@ -65,15 +65,17 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     setEditingCar(null);
   };
 
-  const handleImageUpload = (file: File) => {
+  const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-        setFormData(prev => ({ ...prev, image: result }));
-        setImagePreview(result);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const uploadResult = await uploadImage(file, accessToken!);
+        const fullUrl = `${import.meta.env.VITE_BASE_URL}${uploadResult.url}`;
+        setFormData(prev => ({ ...prev, image: uploadResult.id }));
+        setImagePreview(fullUrl);
+      } catch (error) {
+        console.error('Failed to upload image:', error);
+        alert('Failed to upload image. Please try again.');
+      }
     }
   };
 
@@ -201,7 +203,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
       return;
     }
 
-    const carData = {
+    const baseCarData = {
       brand: formData.brand,
       model: formData.model,
       year: parseInt(formData.year),
@@ -213,12 +215,11 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
       color: formData.color,
       location: formData.location,
       description: formData.description,
-      features: formData.features.split(',').map(f => f.trim()).filter(f => f),
-      image: formData.image || 'https://images.unsplash.com/photo-1494905998402-395d579af36f?w=500'
+      features: formData.features.split(',').map(f => f.trim()).filter(f => f)
     };
 
     if (editingCar) {
-      const fullCarData = { ...carData, id: editingCar.id };
+      const fullCarData: Car = { ...baseCarData, id: editingCar.id, image: formData.image };
       try {
         const updatedCar = await updateCar(fullCarData, accessToken!);
         const updatedCars = cars.map(car => car.id === editingCar.id ? updatedCar : car);
@@ -230,8 +231,9 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
         return;
       }
     } else {
+      const createCarData = { ...baseCarData, image: formData.image };
       try {
-        const newCar = await createCar(carData, accessToken!);
+        const newCar = await createCar(createCarData, accessToken!);
         onCarsUpdate([...cars, newCar]);
       } catch (error) {
         console.error('Failed to create car:', error);
@@ -503,32 +505,6 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                       onChange={handleFileSelect}
                       className="hidden"
                     />
-                  </div>
-                  
-                  {/* Alternative URL Input */}
-                  <div className="mt-4">
-                    <label className="block mb-2 text-sm text-gray-600">Or enter image URL</label>
-                    <div className="flex gap-2">
-                      <Input
-                        value={formData.image}
-                        onChange={(e) => {
-                          setFormData(prev => ({ ...prev, image: e.target.value }));
-                          setImagePreview(e.target.value);
-                        }}
-                        placeholder="https://example.com/image.jpg"
-                        className="flex-1"
-                      />
-                      {formData.image && !formData.image.startsWith('data:') && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => setImagePreview(formData.image)}
-                        >
-                          Preview
-                        </Button>
-                      )}
-                    </div>
                   </div>
                 </div>
                 
