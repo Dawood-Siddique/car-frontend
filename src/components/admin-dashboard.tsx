@@ -70,7 +70,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
       try {
         const uploadResult = await uploadImage(file, accessToken!);
         const fullUrl = uploadResult.url
-        setFormData(prev => ({ ...prev, image: uploadResult.id }));
+        setFormData(prev => ({ ...prev, image: uploadResult.url }));
         setImagePreview(fullUrl);
       } catch (error) {
         console.error('Failed to upload image:', error);
