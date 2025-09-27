@@ -5,7 +5,7 @@ import { ArrowRight, MessageCircle, Phone, Mail } from 'lucide-react';
 // Business contact information
 const BUSINESS_CONTACT = {
   name: 'Premier Auto Sales',
-  phone: '+1234567890',
+  phone: '+817048053690',
   email: 'info@premierautosales.com'
 };
 

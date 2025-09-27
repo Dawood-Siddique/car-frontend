@@ -1,6 +1,6 @@
 import { Button } from './ui/button';
 import { MessageCircle, Phone, Mail } from 'lucide-react';
-import { Car } from '../data/cars';
+import { Car } from '@/types';
 
 interface ContactButtonsProps {
   car: Car;
@@ -9,7 +9,7 @@ interface ContactButtonsProps {
 // Business contact information
 const BUSINESS_CONTACT = {
   name: 'Premier Auto Sales',
-  phone: '+1234567890',
+  phone: '+817048053690',
   email: 'info@premierautosales.com'
 };
 
