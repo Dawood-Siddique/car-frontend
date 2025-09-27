@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { type Car } from '@/types';
 import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-react';
-import { createCar, updateCar, uploadImage } from '../services/cars';
+import { createCar, updateCar, deleteCar, uploadImage } from '../services/cars';
 
 interface AdminDashboardProps {
   cars: Car[];
@@ -184,10 +184,28 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (carId: string) => {
+  const handleDelete = async (carId: string) => {
+    console.log('handleDelete called with carId:', carId);
     if (confirm('Are you sure you want to delete this car?')) {
-      const updatedCars = cars.filter(car => car.id !== carId);
-      onCarsUpdate(updatedCars);
+      console.log('User confirmed deletion for carId:', carId);
+
+      if (!accessToken) {
+        alert('Your session has expired. Please log in again.');
+        logout();
+        navigate('/admin/login');
+        return;
+      }
+
+      try {
+        await deleteCar(carId, accessToken);
+        const updatedCars = cars.filter(car => car.id !== carId);
+        onCarsUpdate(updatedCars);
+      } catch (error) {
+        console.error('Failed to delete car:', error);
+        alert(`Failed to delete car: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    } else {
+      console.log('User cancelled deletion for carId:', carId);
     }
   };
 

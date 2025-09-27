@@ -69,3 +69,20 @@ export const updateCar = async (carData: Car, accessToken: string): Promise<Car>
 
   return response.json();
 };
+
+export const deleteCar = async (carId: string, accessToken: string): Promise<void> => {
+  const formData = new FormData();
+  formData.append('id', carId);
+
+  const response = await fetch(`${API_URL}api/cars/`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete car: ${response.status} ${response.statusText}`);
+  }
+};
