@@ -69,7 +69,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     if (file && file.type.startsWith('image/')) {
       try {
         const uploadResult = await uploadImage(file, accessToken!);
-        const fullUrl = `${import.meta.env.VITE_BASE_URL}${uploadResult.url}`;
+        const fullUrl = uploadResult.url
         setFormData(prev => ({ ...prev, image: uploadResult.id }));
         setImagePreview(fullUrl);
       } catch (error) {

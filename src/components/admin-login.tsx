@@ -23,8 +23,8 @@ export function AdminLogin() {
       const response = await authLogin({ email, password });
       // Assuming response has access_token and refresh_token
       login({
-        access_token: response.access_token,
-        refresh_token: response.refresh_token,
+        access_token: response.access,
+        refresh_token: response.refresh,
       });
       navigate('/admin/dashboard');
     } catch (err: any) {
