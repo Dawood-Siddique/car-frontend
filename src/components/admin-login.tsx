@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { login as authLogin } from '@/services/auth';
 
 export function AdminLogin() {
+  console.log('AdminLogin component rendered');
   const navigate = useNavigate();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
