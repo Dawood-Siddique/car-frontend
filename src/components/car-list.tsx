@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { Car } from '@/types';
 import { ShieldCheck } from 'lucide-react';
 import { fetchCars } from '../services/cars';
+import Header from './header';
 
 interface CarListProps {
   cars?: Car[];
@@ -78,45 +79,39 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
   }
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* Header */}
-      <div className="text-center mb-8 relative">
-        <h1 className="text-4xl mb-4">Find Your Perfect Car</h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto">
-          Browse through our extensive collection of quality used cars.
-          Filter by brand, price, and features to find exactly what you're looking for.
-        </p>
-      </div>
+    <div>
+      <Header />
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Filters */}
+        <CarFilters cars={cars} onFilterChange={handleFilterChange} />
 
-      {/* Filters */}
-      <CarFilters cars={cars} onFilterChange={handleFilterChange} />
-
-      {/* Results Summary */}
-      <div className="flex justify-between items-center mb-6">
-        <p className="text-muted-foreground">
-          Showing {filteredCars.length} of {cars.length} cars
-        </p>
-      </div>
-
-      {/* Car Grid */}
-      {filteredCars.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
-          {filteredCars.map((car) => (
-            <CarCard
-              key={car.id}
-              car={car}
-            />
-          ))}
+        {/* Results Summary */}
+        <div className="flex justify-between items-center mb-6">
+          <p className="text-muted-foreground">
+            Showing {filteredCars.length} of {cars.length} cars
+          </p>
         </div>
-      ) : (
-        <div className="text-center py-12 mb-16">
-          <p className="text-muted-foreground mb-4">No cars match your current filters.</p>
-          <p className="text-muted-foreground">Try adjusting your search criteria.</p>
-        </div>
-      )}
 
-      {/* Contact Information Section */}
-      <ContactInfo />
+        {/* Car Grid */}
+        {filteredCars.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            {filteredCars.map((car) => (
+              <CarCard
+                key={car.id}
+                car={car}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12 mb-16">
+            <p className="text-muted-foreground mb-4">No cars match your current filters.</p>
+            <p className="text-muted-foreground">Try adjusting your search criteria.</p>
+          </div>
+        )}
+
+        {/* Contact Information Section */}
+        <ContactInfo />
+      </div>
     </div>
   );
 }
