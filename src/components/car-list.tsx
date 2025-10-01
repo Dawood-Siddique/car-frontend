@@ -8,6 +8,7 @@ import { Car } from '@/types';
 import { ShieldCheck } from 'lucide-react';
 import { fetchCars } from '../services/cars';
 import Header from './header';
+import { ImageSlider } from './image-slider';
 
 interface CarListProps {
   cars?: Car[];
@@ -81,6 +82,7 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
   return (
     <div>
       <Header />
+      <ImageSlider />
       <div className="max-w-7xl mx-auto p-6">
         {/* Filters */}
         <CarFilters cars={cars} onFilterChange={handleFilterChange} />
