@@ -1,13 +1,40 @@
 
 import { FC } from "react";
 import logo from '../assets/logo.png';
+import { ShieldCheck, Car } from "lucide-react";
 
 const Header: FC = () => {
   return (
-    <header className="text-white py-6 px-8 flex items-center justify-between shadow-lg rounded-b-lg" style={{ background: 'linear-gradient(to right, #2563eb, #60a5fa)' }}>
-      <div className="flex items-center">
-        <img src={logo} alt="Logo" className="h-12 w-12 sm:h-10 sm:w-10 mr-4" />
-        <h1 className="text-4xl sm:text-3xl font-bold">MH International</h1>
+     <header className="bg-white shadow-sm border-b">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo and Company Name */}
+          <div className="flex items-center gap-3">
+            <div className="bg-primary rounded-lg p-2">
+              <Car className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-primary">MH INTERNATIONAL</h1>
+              <p className="text-sm text-muted-foreground">Premium Auto Sales</p>
+            </div>
+          </div>
+
+          {/* Navigation and Admin Button */}
+          <div className="flex items-center gap-6">
+            <nav className="hidden md:flex items-center gap-6">
+              <a href="#inventory" className="text-foreground hover:text-primary transition-colors">
+                Inventory
+              </a>
+              <a href="#about" className="text-foreground hover:text-primary transition-colors">
+                About Us
+              </a>
+              <a href="#contact" className="text-foreground hover:text-primary transition-colors">
+                Contact
+              </a>
+            </nav>
+            
+          </div>
+        </div>
       </div>
     </header>
   );
