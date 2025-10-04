@@ -22,7 +22,7 @@ const sliderImages = [
         description: "Every vehicle undergoes thorough inspection and certification"
     },
     {
-        url: "https://images.unsplash.com/photo-1749222152514-b819f229db99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXRvbW90aXZlJTIwYnVzaW5lc3N8ZW58MXx8fHwxNzU5MzQ2MDAxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        url: "https://images.unsplash.com/photo-1749222152514-b819f229db99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXRvbW90aXZlJTIwYnVzaW5lc3N8ZW58MXx8fHwxNzU5MzQ2MDAxfDA&ixid=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
         alt: "Automotive Business",
         title: "Trusted Partner",
         description: "Your reliable partner in finding the perfect vehicle"
@@ -41,37 +41,37 @@ export function ImageSlider() {
     }, []);
 
     return (
-        <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-gray-900">
-            <Carousel className="w-full h-full">
-                <CarouselContent className="-ml-0">
+        <div style={{position: 'relative', width: '100%', height: '500px', overflow: 'hidden', backgroundColor: '#111827'}}>
+            <Carousel style={{width: '100%', height: '100%'}}>
+                <CarouselContent style={{display: 'flex'}}>
                     {sliderImages.map((image, index) => (
-                        <CarouselItem key={index} className="pl-0">
-                            <div className="relative w-full h-[400px] md:h-[500px]">
+                        <CarouselItem key={index} style={{minWidth: '100%'}}>
+                            <div style={{position: 'relative', width: '100%', height: '500px'}}>
                                 <ImageWithFallback
                                     src={image.url}
                                     alt={image.alt}
-                                    className="w-full h-full object-cover"
+                                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
                                 />
 
                                 {/* Overlay with gradient */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent"></div>
+                                <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3), transparent)'}}></div>
 
                                 {/* Content overlay */}
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="max-w-7xl mx-auto px-6 w-full">
-                                        <div className="max-w-2xl text-white">
-                                            <h2 className="text-4xl md:text-6xl font-bold mb-4">{image.title}</h2>
-                                            <p className="text-lg md:text-xl mb-8 text-gray-200">{image.description}</p>
-                                            <div className="flex gap-4">
+                                <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center'}}>
+                                    <div style={{maxWidth: '1280px', margin: 'auto', padding: '0 1.5rem', width: '100%'}}>
+                                        <div style={{maxWidth: '42rem', color: 'white'}}>
+                                            <h2 style={{fontSize: '2.25rem', fontWeight: '700', marginBottom: '1rem'}}>{image.title}</h2>
+                                            <p style={{fontSize: '1.25rem', marginBottom: '2rem', color: '#E5E7EB'}}>{image.description}</p>
+                                            <div style={{display: 'flex', gap: '1rem'}}>
                                                 <a
                                                     href="#inventory"
-                                                    className="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg transition-colors inline-block"
+                                                    style={{backgroundColor: '#030213', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block'}}
                                                 >
                                                     View Inventory
                                                 </a>
                                                 <a
                                                     href="#contact"
-                                                    className="border-2 border-white text-white hover:bg-white hover:text-black px-8 py-3 rounded-lg transition-colors inline-block"
+                                                    style={{border: '2px solid white', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block'}}
                                                 >
                                                     Contact Us
                                                 </a>
@@ -83,18 +83,17 @@ export function ImageSlider() {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious className="left-4 bg-white/20 border-white/20 text-white hover:bg-white/30" />
-                <CarouselNext className="right-4 bg-white/20 border-white/20 text-white hover:bg-white/30" />
+                <CarouselPrevious style={{left: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white'}} />
+                <CarouselNext style={{right: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white'}} />
             </Carousel>
 
             {/* Slide indicators */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
+            <div style={{position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem'}}>
                 {sliderImages.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentIndex(index)}
-                        className={`w-3 h-3 rounded-full transition-colors ${index === currentIndex ? 'bg-white' : 'bg-white/50'
-                            }`}
+                        style={{width: '0.75rem', height: '0.75rem', borderRadius: '9999px', backgroundColor: index === currentIndex ? 'white' : 'rgba(255,255,255,0.5)'}}
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}
