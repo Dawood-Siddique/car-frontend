@@ -7,6 +7,8 @@ import { Button } from './ui/button';
 import { Car } from '@/types';
 import { ShieldCheck } from 'lucide-react';
 import { fetchCars } from '../services/cars';
+import { fetchImageSlider } from '../services/image_slider';
+import { ImageSlider as ImageSliderType } from '@/types';
 import Header from './header';
 import { ImageSlider } from './image-slider';
 
@@ -22,6 +24,9 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
   const [filteredCars, setFilteredCars] = useState<Car[]>(propCars || []);
   const [loading, setLoading] = useState<boolean>(propLoading !== undefined ? propLoading : true);
   const [error, setError] = useState<string | null>(propError || null);
+  const [imageSliderData, setImageSliderData] = useState<ImageSliderType[]>([]);
+  const [sliderLoading, setSliderLoading] = useState<boolean>(true);
+  const [sliderError, setSliderError] = useState<string | null>(null);
 
   const handleFilterChange = (newFilteredCars: Car[]) => {
     setFilteredCars(newFilteredCars);
@@ -58,6 +63,21 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
     setError(propError || null);
   }, [propError]);
 
+  useEffect(() => {
+    const loadImageSlider = async () => {
+      try {
+        const fetchedImages = await fetchImageSlider();
+        setImageSliderData(fetchedImages);
+      } catch (err) {
+        setSliderError(err instanceof Error ? err.message : 'Failed to load image slider');
+      } finally {
+        setSliderLoading(false);
+      }
+    };
+
+    loadImageSlider();
+  }, []);
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
@@ -82,7 +102,21 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
   return (
     <div>
       <Header />
-      <ImageSlider />
+      {sliderLoading ? (
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Loading image slider...</p>
+          </div>
+        </div>
+      ) : sliderError ? (
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-4">Error loading image slider: {sliderError}</p>
+          </div>
+        </div>
+      ) : (
+        <ImageSlider images={imageSliderData} />
+      )}
       <div className="max-w-7xl mx-auto p-6">
         {/* Filters */}
         <CarFilters cars={cars} onFilterChange={handleFilterChange} />

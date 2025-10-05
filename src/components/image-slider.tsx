@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { ImageSlider as ImageSliderType } from '@/types';
 
+// Commented out static data
+/*
 const sliderImages = [
     {
         url: "https://images.unsplash.com/photo-1705747401901-28363172fe7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjBzaG93cm9vbXxlbnwxfHx8fDE3NTkyNjE4MTB8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
@@ -22,29 +25,34 @@ const sliderImages = [
         description: "Every vehicle undergoes thorough inspection and certification"
     },
     {
-        url: "https://images.unsplash.com/photo-1749222152514-b819f229db99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXRvbW90aXZlJTIwYnVzaW5lc3N8ZW58MXx8fHwxNzU5MzQ2MDAxfDA&ixid=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+        url: "https://images.unsplash.com/photo-1749222152514-b819f229db99?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdXRvbW90aXZlJTIwYnVzaW5lc3N8ZW58MXx8fHwxNzU5MzQ2MDAxfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
         alt: "Automotive Business",
         title: "Trusted Partner",
         description: "Your reliable partner in finding the perfect vehicle"
     }
 ];
+*/
 
-export function ImageSlider() {
+interface ImageSliderProps {
+  images: ImageSliderType[];
+}
+
+export function ImageSlider({ images }: ImageSliderProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % sliderImages.length);
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
         }, 5000);
 
         return () => clearInterval(timer);
-    }, []);
+    }, [images.length]);
 
     return (
         <div style={{position: 'relative', width: '100%', height: '500px', overflow: 'hidden', backgroundColor: '#111827'}}>
             <Carousel style={{width: '100%', height: '100%'}}>
                 <CarouselContent style={{display: 'flex'}}>
-                    {sliderImages.map((image, index) => (
+                    {images.map((image, index) => (
                         <CarouselItem key={index} style={{minWidth: '100%'}}>
                             <div style={{position: 'relative', width: '100%', height: '500px'}}>
                                 <ImageWithFallback
@@ -89,7 +97,7 @@ export function ImageSlider() {
 
             {/* Slide indicators */}
             <div style={{position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem'}}>
-                {sliderImages.map((_, index) => (
+                {images.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentIndex(index)}
