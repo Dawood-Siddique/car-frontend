@@ -39,6 +39,31 @@ interface ImageSliderProps {
 
 export function ImageSlider({ images }: ImageSliderProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [api, setApi] = useState<any>(null);
+
+    useEffect(() => {
+        console.log('Current index:', currentIndex);
+        if (api) {
+            console.log('Carousel selected index:', api.selectedScrollSnap());
+        }
+    }, [currentIndex, api]);
+
+    useEffect(() => {
+        if (!api) return;
+
+        const onSelect = () => {
+            setCurrentIndex(api.selectedScrollSnap());
+        };
+
+        api.on('select', onSelect);
+        return () => api.off('select', onSelect);
+    }, [api]);
+
+    useEffect(() => {
+        if (api) {
+            api.scrollTo(currentIndex);
+        }
+    }, [currentIndex, api]);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -50,7 +75,7 @@ export function ImageSlider({ images }: ImageSliderProps) {
 
     return (
         <div style={{position: 'relative', width: '100%', height: '500px', overflow: 'hidden', backgroundColor: '#111827'}}>
-            <Carousel style={{width: '100%', height: '100%'}}>
+            <Carousel setApi={setApi} style={{width: '100%', height: '100%'}}>
                 <CarouselContent style={{display: 'flex'}}>
                     {images.map((image, index) => (
                         <CarouselItem key={index} style={{minWidth: '100%'}}>
