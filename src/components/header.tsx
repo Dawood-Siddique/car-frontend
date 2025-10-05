@@ -5,30 +5,30 @@ import { ShieldCheck, Car } from "lucide-react";
 
 const Header: FC = () => {
   return (
-     <header className="bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
+     <header style={{ backgroundColor: 'white', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', borderBottom: '1px solid rgba(0, 0, 0, 0.1)' }}>
+      <div style={{ maxWidth: '80rem', margin: '0 auto', padding: '1rem 1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* Logo and Company Name */}
-          <div className="flex items-center gap-3">
-            <div className="bg-primary rounded-lg p-2">
-              <Car className="w-8 h-8 text-white" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ borderRadius: '0.625rem', padding: '0.5rem' }}>
+              <img src={logo} alt="Logo" style={{ width: '2rem', height: '2rem' }} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-primary">MH INTERNATIONAL</h1>
-              <p className="text-sm text-muted-foreground">Premium Auto Sales</p>
+              <h1 style={{ fontSize: '1.5rem', lineHeight: '2rem', fontWeight: 'bold', color: 'var(--primary)' }}>MH INTERNATIONAL</h1>
+              <p style={{ fontSize: '0.875rem', lineHeight: '1.25rem', color: 'var(--muted-foreground)' }}>Premium Auto Sales</p>
             </div>
           </div>
 
           {/* Navigation and Admin Button */}
-          <div className="flex items-center gap-6">
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="#inventory" className="text-foreground hover:text-primary transition-colors">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <nav style={{ display: 'none', alignItems: 'center', gap: '1.5rem' }}>
+              <a href="#inventory" style={{ color: 'var(--foreground)' }}>
                 Inventory
               </a>
-              <a href="#about" className="text-foreground hover:text-primary transition-colors">
+              <a href="#about" style={{ color: 'var(--foreground)' }}>
                 About Us
               </a>
-              <a href="#contact" className="text-foreground hover:text-primary transition-colors">
+              <a href="#contact" style={{ color: 'var(--foreground)' }}>
                 Contact
               </a>
             </nav>
