@@ -4,9 +4,9 @@ import { ArrowRight, MessageCircle, Phone, Mail } from 'lucide-react';
 
 // Business contact information
 const BUSINESS_CONTACT = {
-  name: 'Premier Auto Sales',
+  name: 'The HM International',
   phone: '+817048053690',
-  email: 'info@premierautosales.com'
+  email: 'info@thehminternational.com'
 };
 
 export function ContactInfo() {
