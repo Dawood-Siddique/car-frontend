@@ -39,17 +39,25 @@ async function api_login(){
     return access;
 }
 
-async function main() {
-    let access = "";
-    access = await api_login();
-
+async function api_get_cars(){
     try {
         const cars = await fetchCars();
         console.log("Fetched cars:", cars);
     } catch (error) {
         console.error("Error:", (error as Error).message);
     }
+}
 
+async function api_get_image_slider(){
+    try{
+        const imageSliders = await fetchImageSlider();
+        console.log("Fetched image sliders:", imageSliders);
+    } catch (error){
+        console.error("Error: ", (error as Error).message)
+    }
+}
+
+async function api_upload_image_slider(access: string){
     try{
         const imageSlider = await createImageSlider(imageSliderData[0], access);
         console.log("Created image slider:", imageSlider);
@@ -57,13 +65,16 @@ async function main() {
         console.error("Error:", (error as Error).message)
     }
 
-    try{
-        const imageSliders = await fetchImageSlider();
-        console.log("Fetched image sliders:", imageSliders);
-    } catch (error){
-        console.error("Error: ", (error as Error).message)
-    }
+}
+async function main() {
+    let access = "";
+    // access = await api_login();
 
+    // api_get_cars();
+    // console.log(imageSliderData[0])
+
+    // api_upload_image_slider(access);
+    api_get_image_slider();
 
     // try{
     //     const url = await uploadImage(new File([""], "Dashboard.png"), access);
