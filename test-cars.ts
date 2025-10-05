@@ -1,5 +1,6 @@
 import { fetchCars, uploadImage } from "./src/services/cars.ts";
 import { login } from "./src/services/auth.ts";
+import { fetchImageSlider } from "./src/services/image_slider.ts";
 
 async function main() {
     let access = "";
@@ -8,6 +9,13 @@ async function main() {
         console.log("Fetched cars:", cars);
     } catch (error) {
         console.error("Error:", (error as Error).message);
+    }
+
+    try{
+        const imageSliders = await fetchImageSlider();
+        console.log("Fetched image sliders:", imageSliders);
+    } catch (error){
+        console.error("Error: ", (error as Error).message)
     }
 
     // try {

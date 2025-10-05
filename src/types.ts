@@ -19,3 +19,11 @@ export interface Car {
   features: string[];
   location: string;
 }
+
+export interface ImageSlider {
+  id: string
+  url: string
+  alt: string
+  title: string
+  description: string
+}
