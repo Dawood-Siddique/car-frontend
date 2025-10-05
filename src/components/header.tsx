@@ -10,8 +10,8 @@ const Header: FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {/* Logo and Company Name */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ borderRadius: '0.625rem', padding: '0.5rem' }}>
-              <img src={logo} alt="Logo" style={{ width: '2rem', height: '2rem' }} />
+            <div >
+              <img src={logo} alt="Logo" style={{ width: '4rem', height: '4rem' }} />
             </div>
             <div>
               <h1 style={{ fontSize: '1.5rem', lineHeight: '2rem', fontWeight: 'bold', color: 'var(--primary)' }}>MH INTERNATIONAL</h1>
