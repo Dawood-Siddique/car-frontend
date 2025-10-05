@@ -50,7 +50,7 @@ export function ContactInfo() {
   ];
 
   return (
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16 px-6">
+    <div id="contact" className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="mb-4 text-blue-900">Interested in Any Car?</h2>

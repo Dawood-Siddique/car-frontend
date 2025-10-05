@@ -96,7 +96,7 @@ export function CarList({ cars: propCars, loading: propLoading, error: propError
 
         {/* Car Grid */}
         {filteredCars.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          <div id="inventory" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
             {filteredCars.map((car) => (
               <CarCard
                 key={car.id}
