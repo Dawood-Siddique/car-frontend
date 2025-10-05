@@ -6,16 +6,19 @@ import { Input } from './ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
-import { type Car } from '@/types';
+import { type Car, type ImageSlider } from '@/types';
 import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-react';
 import { createCar, updateCar, deleteCar, uploadImage } from '../services/cars';
+import { createImageSlider, updateImageSlider, deleteImageSlider } from '../services/image_slider';
 
 interface AdminDashboardProps {
   cars: Car[];
   onCarsUpdate: (cars: Car[]) => void;
+  imageSliders: ImageSlider[];
+  onImageSlidersUpdate: (imageSliders: ImageSlider[]) => void;
 }
 
-export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
+export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlidersUpdate }: AdminDashboardProps) {
   const navigate = useNavigate();
   const { logout, isAdminLoggedIn, accessToken } = useAuth();
 
@@ -29,6 +32,13 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Image Slider states
+  const [isSliderDialogOpen, setIsSliderDialogOpen] = useState(false);
+  const [editingImageSlider, setEditingImageSlider] = useState<ImageSlider | null>(null);
+  const [sliderImagePreview, setSliderImagePreview] = useState<string>('');
+  const [isSliderDragOver, setIsSliderDragOver] = useState(false);
+  const sliderFileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -43,6 +53,13 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     description: '',
     features: '',
     image: ''
+  });
+
+  const [sliderFormData, setSliderFormData] = useState({
+    url: '',
+    alt: '',
+    title: '',
+    description: ''
   });
 
   const resetForm = () => {
@@ -65,6 +82,17 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     setEditingCar(null);
   };
 
+  const resetSliderForm = () => {
+    setSliderFormData({
+      url: '',
+      alt: '',
+      title: '',
+      description: ''
+    });
+    setSliderImagePreview('');
+    setEditingImageSlider(null);
+  };
+
   const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith('image/')) {
       try {
@@ -79,10 +107,31 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     }
   };
 
+  const handleSliderImageUpload = async (file: File) => {
+    if (file && file.type.startsWith('image/')) {
+      try {
+        const uploadResult = await uploadImage(file, accessToken!);
+        const fullUrl = uploadResult.url
+        setSliderFormData(prev => ({ ...prev, url: uploadResult.url }));
+        setSliderImagePreview(fullUrl);
+      } catch (error) {
+        console.error('Failed to upload slider image:', error);
+        alert('Failed to upload image. Please try again.');
+      }
+    }
+  };
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       handleImageUpload(file);
+    }
+  };
+
+  const handleSliderFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleSliderImageUpload(file);
     }
   };
 
@@ -105,6 +154,25 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     }
   };
 
+  const handleSliderDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsSliderDragOver(true);
+  };
+
+  const handleSliderDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsSliderDragOver(false);
+  };
+
+  const handleSliderDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsSliderDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      handleSliderImageUpload(file);
+    }
+  };
+
   const handlePaste = (e: React.ClipboardEvent) => {
     const items = e.clipboardData?.items;
     if (items) {
@@ -121,11 +189,35 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     }
   };
 
+  const handleSliderPaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            handleSliderImageUpload(file);
+          }
+          break;
+        }
+      }
+    }
+  };
+
   const removeImage = () => {
     setFormData(prev => ({ ...prev, image: '' }));
     setImagePreview('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
+    }
+  };
+
+  const removeSliderImage = () => {
+    setSliderFormData(prev => ({ ...prev, url: '' }));
+    setSliderImagePreview('');
+    if (sliderFileInputRef.current) {
+      sliderFileInputRef.current.value = '';
     }
   };
 
@@ -158,6 +250,35 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     };
   }, [isDialogOpen]);
 
+  // Add paste event listener to the slider dialog
+  useEffect(() => {
+    const handleGlobalSliderPaste = (e: ClipboardEvent) => {
+      if (isSliderDialogOpen) {
+        const items = e.clipboardData?.items;
+        if (items) {
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            if (item.type.startsWith('image/')) {
+              const file = item.getAsFile();
+              if (file) {
+                handleSliderImageUpload(file);
+              }
+              break;
+            }
+          }
+        }
+      }
+    };
+
+    if (isSliderDialogOpen) {
+      document.addEventListener('paste', handleGlobalSliderPaste);
+    }
+
+    return () => {
+      document.removeEventListener('paste', handleGlobalSliderPaste);
+    };
+  }, [isSliderDialogOpen]);
+
   const handleEdit = (car: Car) => {
     setEditingCar(car);
     setFormData({
@@ -184,6 +305,23 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
     setIsDialogOpen(true);
   };
 
+  const handleSliderEdit = (slider: ImageSlider) => {
+    setEditingImageSlider(slider);
+    setSliderFormData({
+      url: slider.url,
+      alt: slider.alt,
+      title: slider.title,
+      description: slider.description
+    });
+    setSliderImagePreview(slider.url);
+    setIsSliderDialogOpen(true);
+  };
+
+  const handleSliderAdd = () => {
+    resetSliderForm();
+    setIsSliderDialogOpen(true);
+  };
+
   const handleDelete = async (carId: string) => {
     console.log('handleDelete called with carId:', carId);
     if (confirm('Are you sure you want to delete this car?')) {
@@ -206,6 +344,26 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
       }
     } else {
       console.log('User cancelled deletion for carId:', carId);
+    }
+  };
+
+  const handleSliderDelete = async (sliderId: string) => {
+    if (confirm('Are you sure you want to delete this slide?')) {
+      if (!accessToken) {
+        alert('Your session has expired. Please log in again.');
+        logout();
+        navigate('/admin/login');
+        return;
+      }
+
+      try {
+        await deleteImageSlider(sliderId, accessToken);
+        const updatedSliders = imageSliders.filter(slider => slider.id !== sliderId);
+        onImageSlidersUpdate(updatedSliders);
+      } catch (error) {
+        console.error('Failed to delete slide:', error);
+        alert(`Failed to delete slide: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
     }
   };
 
@@ -263,6 +421,49 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
 
     setIsDialogOpen(false);
     resetForm();
+  };
+
+  const handleSliderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!accessToken) {
+      alert('Your session has expired. Please log in again.');
+      logout();
+      navigate('/admin/login');
+      return;
+    }
+
+    const baseSliderData = {
+      url: sliderFormData.url,
+      alt: sliderFormData.alt,
+      title: sliderFormData.title,
+      description: sliderFormData.description
+    };
+
+    if (editingImageSlider) {
+      const fullSliderData: ImageSlider = { ...baseSliderData, id: editingImageSlider.id };
+      try {
+        const updatedSlider = await updateImageSlider(fullSliderData, accessToken!);
+        const updatedSliders = imageSliders.map(slider => slider.id === editingImageSlider.id ? updatedSlider : slider);
+        onImageSlidersUpdate(updatedSliders);
+      } catch (error) {
+        console.error('Failed to update slide:', error);
+        alert(`Failed to update slide: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        return;
+      }
+    } else {
+      try {
+        const newSlider = await createImageSlider(baseSliderData, accessToken!);
+        onImageSlidersUpdate([...imageSliders, newSlider]);
+      } catch (error) {
+        console.error('Failed to create slide:', error);
+        alert(`Failed to add slide: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        return;
+      }
+    }
+
+    setIsSliderDialogOpen(false);
+    resetSliderForm();
   };
 
   return (
@@ -336,6 +537,56 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
           </div>
         </div>
 
+        <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+          <div className="flex justify-between items-center mb-6">
+            <h2>Image Slider Management</h2>
+            <Button onClick={handleSliderAdd}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add New Slide
+            </Button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Title</TableHead>
+                  <TableHead>Alt Text</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {imageSliders.map((slider) => (
+                  <TableRow key={slider.id}>
+                    <TableCell>{slider.title}</TableCell>
+                    <TableCell>{slider.alt}</TableCell>
+                    <TableCell>{slider.description}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSliderEdit(slider)}
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleSliderDelete(slider.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
@@ -343,13 +594,13 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                 {editingCar ? 'Edit Car' : 'Add New Car'}
               </DialogTitle>
               <DialogDescription>
-                {editingCar 
-                  ? 'Make changes to the car details below.' 
+                {editingCar
+                  ? 'Make changes to the car details below.'
                   : 'Fill in the details below to add a new car to the inventory.'
                 }
               </DialogDescription>
             </DialogHeader>
-            
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -360,7 +611,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Model</label>
                   <Input
@@ -369,7 +620,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Year</label>
                   <Input
@@ -379,7 +630,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Price ($)</label>
                   <Input
@@ -389,7 +640,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Mileage</label>
                   <Input
@@ -399,7 +650,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Fuel Type</label>
                   <Select value={formData.fuelType} onValueChange={(value: Car['fuelType']) => setFormData(prev => ({ ...prev, fuelType: value }))}>
@@ -414,7 +665,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Transmission</label>
                   <Select value={formData.transmission} onValueChange={(value: Car['transmission']) => setFormData(prev => ({ ...prev, transmission: value }))}>
@@ -427,7 +678,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Body Type</label>
                   <Select value={formData.bodyType} onValueChange={(value: Car['bodyType']) => setFormData(prev => ({ ...prev, bodyType: value }))}>
@@ -444,7 +695,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Color</label>
                   <Input
@@ -453,7 +704,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div>
                   <label className="block mb-2">Location</label>
                   <Input
@@ -463,17 +714,16 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     required
                   />
                 </div>
-                
+
                 <div className="md:col-span-2">
                   <label className="block mb-2">Car Image</label>
-                  
+
                   {/* Image Upload Area */}
                   <div
-                    className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
-                      isDragOver 
-                        ? 'border-blue-500 bg-blue-50' 
+                    className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${isDragOver
+                        ? 'border-blue-500 bg-blue-50'
                         : 'border-gray-300 hover:border-gray-400'
-                    }`}
+                      }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
@@ -515,7 +765,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                         </Button>
                       </div>
                     )}
-                    
+
                     <input
                       ref={fileInputRef}
                       type="file"
@@ -525,7 +775,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     />
                   </div>
                 </div>
-                
+
                 <div className="md:col-span-2">
                   <label className="block mb-2">Features (comma-separated)</label>
                   <Input
@@ -534,7 +784,7 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                     placeholder="Air Conditioning, Navigation System, Leather Seats"
                   />
                 </div>
-                
+
                 <div className="md:col-span-2">
                   <label className="block mb-2">Description</label>
                   <textarea
@@ -545,13 +795,132 @@ export function AdminDashboard({ cars, onCarsUpdate }: AdminDashboardProps) {
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
                   Cancel
                 </Button>
                 <Button type="submit">
                   {editingCar ? 'Update' : 'Add'} Car
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isSliderDialogOpen} onOpenChange={setIsSliderDialogOpen}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingImageSlider ? 'Edit Slide' : 'Add New Slide'}
+              </DialogTitle>
+              <DialogDescription>
+                {editingImageSlider
+                  ? 'Make changes to the slide details below.'
+                  : 'Fill in the details below to add a new slide to the slider.'
+                }
+              </DialogDescription>
+            </DialogHeader>
+
+            <form onSubmit={handleSliderSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label className="block mb-2">Title</label>
+                  <Input
+                    value={sliderFormData.title}
+                    onChange={(e) => setSliderFormData(prev => ({ ...prev, title: e.target.value }))}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-2">Alt Text</label>
+                  <Input
+                    value={sliderFormData.alt}
+                    onChange={(e) => setSliderFormData(prev => ({ ...prev, alt: e.target.value }))}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-2">Slide Image</label>
+
+                  {/* Image Upload Area */}
+                  <div
+                    className={`relative border-2 border-dashed rounded-lg p-6 transition-colors ${
+                      isSliderDragOver
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                    onDragOver={handleSliderDragOver}
+                    onDragLeave={handleSliderDragLeave}
+                    onDrop={handleSliderDrop}
+                    onPaste={handleSliderPaste}
+                  >
+                    {sliderImagePreview || sliderFormData.url ? (
+                      <div className="relative">
+                        <img
+                          src={sliderImagePreview || sliderFormData.url}
+                          alt="Slide preview"
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={removeSliderImage}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="text-center">
+                        <ImageIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
+                        <p className="text-gray-600 mb-2">
+                          Drag and drop an image here, or click to select
+                        </p>
+                        <p className="text-sm text-gray-500 mb-4">
+                          You can also paste an image from your clipboard (Ctrl+V)
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => sliderFileInputRef.current?.click()}
+                        >
+                          <Upload className="w-4 h-4 mr-2" />
+                          Choose File
+                        </Button>
+                      </div>
+                    )}
+
+                    <input
+                      ref={sliderFileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={handleSliderFileSelect}
+                      className="hidden"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block mb-2">Description</label>
+                  <textarea
+                    className="w-full p-2 border rounded-md min-h-[100px] resize-none"
+                    value={sliderFormData.description}
+                    onChange={(e) => setSliderFormData(prev => ({ ...prev, description: e.target.value }))}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4">
+                <Button type="button" variant="outline" onClick={() => setIsSliderDialogOpen(false)}>
+                  Cancel
+                </Button>
+                <Button type="submit">
+                  {editingImageSlider ? 'Update' : 'Add'} Slide
                 </Button>
               </div>
             </form>

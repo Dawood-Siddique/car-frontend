@@ -4,17 +4,23 @@ import { CarList } from './components/car-list';
 import { CarDetails } from './components/car-details';
 import { AdminLogin } from './components/admin-login';
 import { AdminDashboard } from './components/admin-dashboard';
-import { type Car } from './types';
+import { type Car, type ImageSlider } from './types';
 import { useState, useEffect } from 'react';
 import { fetchCars } from './services/cars';
+import { fetchImageSlider } from './services/image_slider';
 
 export default function App() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [imageSliders, setImageSliders] = useState<ImageSlider[]>([]);
 
   const handleCarsUpdate = (updatedCars: Car[]) => {
     setCars(updatedCars);
+  };
+
+  const handleImageSlidersUpdate = (updatedImageSliders: ImageSlider[]) => {
+    setImageSliders(updatedImageSliders);
   };
 
   useEffect(() => {
@@ -32,6 +38,19 @@ export default function App() {
     loadCars();
   }, []);
 
+  useEffect(() => {
+    const loadImageSliders = async () => {
+      try {
+        const fetchedImageSliders = await fetchImageSlider();
+        setImageSliders(fetchedImageSliders);
+      } catch (err) {
+        console.error('Failed to load image sliders:', err);
+      }
+    };
+
+    loadImageSliders();
+  }, []);
+
   return (
     <BrowserRouter>
       <AuthProvider>
@@ -40,7 +59,7 @@ export default function App() {
             <Route path="/" element={<CarList cars={cars} loading={loading} error={error} />} />
             <Route path="/car/:id" element={<CarDetails cars={cars} />} />
             <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard cars={cars} onCarsUpdate={handleCarsUpdate} />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard cars={cars} onCarsUpdate={handleCarsUpdate} imageSliders={imageSliders} onImageSlidersUpdate={handleImageSlidersUpdate} />} />
           </Routes>
         </div>
       </AuthProvider>
