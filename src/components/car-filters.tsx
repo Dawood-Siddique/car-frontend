@@ -22,10 +22,10 @@ export function CarFilters({ cars, onFilterChange }: CarFiltersProps) {
     maxYear: ''
   });
 
-  const brands = [...new Set(cars.map(car => car.brand))].sort();
-  const bodyTypes = [...new Set(cars.map(car => car.bodyType))].sort();
-  const fuelTypes = [...new Set(cars.map(car => car.fuelType))].sort();
-  const transmissions = [...new Set(cars.map(car => car.transmission))].sort();
+  const brands = [...new Set(cars.map(car => car.brand).filter(b => b))].sort();
+  const bodyTypes = [...new Set(cars.map(car => car.bodyType).filter(b => b))].sort();
+  const fuelTypes = [...new Set(cars.map(car => car.fuelType).filter(f => f))].sort();
+  const transmissions = [...new Set(cars.map(car => car.transmission).filter(t => t))].sort();
 
   useEffect(() => {
     applyFilters();

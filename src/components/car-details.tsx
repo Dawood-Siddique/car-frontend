@@ -19,10 +19,10 @@ interface CarDetailsProps {
 }
 
 export function CarDetails({ cars }: CarDetailsProps) {
-  const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
+   const { id } = useParams<{ id: string }>();
+   const navigate = useNavigate();
 
-  const car = cars.find(c => c.id == id);
+   const car = cars.find(c => c.id == id);
 
   if (!car) {
     return (
