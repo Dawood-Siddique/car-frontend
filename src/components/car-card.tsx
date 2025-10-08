@@ -14,7 +14,7 @@ export function CarCard({ car }: CarCardProps) {
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'JPY',
       minimumFractionDigits: 0,
     }).format(price);
   };

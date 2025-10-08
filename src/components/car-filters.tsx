@@ -166,7 +166,7 @@ export function CarFilters({ cars, onFilterChange }: CarFiltersProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
-              <label className="block mb-2">Min Price ($)</label>
+              <label className="block mb-2">Min Price (¥)</label>
               <Input
                 type="number"
                 placeholder="0"
@@ -176,7 +176,7 @@ export function CarFilters({ cars, onFilterChange }: CarFiltersProps) {
             </div>
 
             <div>
-              <label className="block mb-2">Max Price ($)</label>
+              <label className="block mb-2">Max Price (¥)</label>
               <Input
                 type="number"
                 placeholder="No limit"

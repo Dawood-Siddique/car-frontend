@@ -509,7 +509,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
                     <TableCell>{car.brand}</TableCell>
                     <TableCell>{car.model}</TableCell>
                     <TableCell>{car.year}</TableCell>
-                    <TableCell>${car.price.toLocaleString()}</TableCell>
+                    <TableCell>¥{car.price.toLocaleString()}</TableCell>
                     <TableCell>{car.fuelType}</TableCell>
                     <TableCell>{car.transmission}</TableCell>
                     <TableCell>
@@ -632,7 +632,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
                 </div>
 
                 <div>
-                  <label className="block mb-2">Price ($)</label>
+                  <label className="block mb-2">Price (¥)</label>
                   <Input
                     type="number"
                     value={formData.price}

@@ -15,13 +15,13 @@ const BUSINESS_CONTACT = {
 
 export function ContactButtons({ car }: ContactButtonsProps) {
   const handleWhatsApp = () => {
-    const message = `Hi! I'm interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(car.price)}. Could you please provide more details?`;
+    const message = `Hi! I'm interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(car.price)}. Could you please provide more details?`;
     const whatsappUrl = `https://wa.me/${BUSINESS_CONTACT.phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const handleViber = () => {
-    const message = `Hi! I'm interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(car.price)}`;
+    const message = `Hi! I'm interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(car.price)}`;
     const viberUrl = `viber://chat?number=${BUSINESS_CONTACT.phone}&text=${encodeURIComponent(message)}`;
     window.open(viberUrl, '_blank');
   };
@@ -30,14 +30,14 @@ export function ContactButtons({ car }: ContactButtonsProps) {
     const subject = `Inquiry about ${car.year} ${car.brand} ${car.model}`;
     const body = `Hello,
 
-I am interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(car.price)}.
+I am interested in the ${car.year} ${car.brand} ${car.model} listed for ${new Intl.NumberFormat('en-US', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(car.price)}.
 
 Could you please provide more information about the vehicle's condition, maintenance history, and availability for viewing?
 
 Thank you for your time.
 
 Best regards`;
-    
+
     const emailUrl = `mailto:${BUSINESS_CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     window.open(emailUrl, '_blank');
   };
