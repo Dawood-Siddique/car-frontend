@@ -65,7 +65,19 @@ export function ContactInfo() {
             <div key={step.number} className="flex items-center">
               <Card className="flex-1 bg-white border-2 border-blue-100 hover:border-blue-200 transition-colors">
                 <CardContent className="p-6 text-center">
-                  <div className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                  <div
+                    style={{
+                      backgroundColor: "#202a35",
+                      color: "white",
+                      borderRadius: "9999px",
+                      width: "3rem",
+                      height: "3rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "0 auto 1rem",
+                    }}
+                  >
                     <span className="text-lg">{step.number}</span>
                   </div>
                   <div className="text-blue-600 mb-3 flex justify-center">
@@ -77,7 +89,7 @@ export function ContactInfo() {
                   </p>
                 </CardContent>
               </Card>
-              
+
               {/* Arrow pointing to next step */}
               {index < steps.length - 1 && (
                 <div className="hidden lg:flex items-center justify-center px-4">
@@ -96,23 +108,23 @@ export function ContactInfo() {
               Contact us now for instant response and personalized service. Our team is ready to help you!
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
+            <Button
               onClick={handleWhatsApp}
               className="bg-green-600 hover:bg-green-700 gap-2"
             >
               <MessageCircle className="w-4 h-4" />
               WhatsApp
             </Button>
-            <Button 
+            <Button
               onClick={handleViber}
               className="bg-purple-600 hover:bg-purple-700 gap-2"
             >
               <Phone className="w-4 h-4" />
               Viber
             </Button>
-            <Button 
+            <Button
               onClick={handleEmail}
               className="bg-blue-600 hover:bg-blue-700 gap-2"
             >
