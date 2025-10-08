@@ -102,7 +102,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
         setImagePreview(fullUrl);
       } catch (error) {
         console.error('Failed to upload image:', error);
-        alert('Failed to upload image. Please try again.');
+        alert(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`); {/* show erro message to user */}
       }
     }
   };
