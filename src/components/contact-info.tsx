@@ -5,7 +5,7 @@ import { ArrowRight, MessageCircle, Phone, Mail } from 'lucide-react';
 // Business contact information
 const BUSINESS_CONTACT = {
   name: 'The HM International',
-  phone: '+817048053690',
+  phone: '+818036615951',
   email: 'info@thehminternational.com'
 };
 

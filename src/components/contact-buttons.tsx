@@ -9,7 +9,7 @@ interface ContactButtonsProps {
 // Business contact information
 const BUSINESS_CONTACT = {
   name: 'The HM International',
-  phone: '+817048053690',
+  phone: '+818036615951',
   email: 'info@thehminternational.com'
 };
 
