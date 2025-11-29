@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { type Car, type ImageSlider } from '@/types';
 import { Pencil, Trash2, Plus, Upload, X, Image as ImageIcon } from 'lucide-react';
-import { createCar, updateCar, deleteCar, uploadImage } from '../services/cars';
+import { createCar, updateCar, deleteCar, uploadImage, uploadImageToCar, deleteImage } from '../services/cars';
 import { createImageSlider, updateImageSlider, deleteImageSlider } from '../services/image_slider';
 
 interface AdminDashboardProps {
@@ -32,6 +32,9 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [originalImages, setOriginalImages] = useState<{ id: string; url: string }[]>([]);
+  const [pendingUploads, setPendingUploads] = useState<File[]>([]);
+  const [imagesToDelete, setImagesToDelete] = useState<string[]>([]);
 
   // Image Slider states
   const [isSliderDialogOpen, setIsSliderDialogOpen] = useState(false);
@@ -80,6 +83,9 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
     });
     setImagePreviews([]);
     setEditingCar(null);
+    setOriginalImages([]);
+    setPendingUploads([]);
+    setImagesToDelete([]);
   };
 
   const resetSliderForm = () => {
@@ -95,14 +101,20 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
 
   const handleImageUpload = async (file: File) => {
     if (file && file.type.startsWith('image/')) {
-      try {
-        const uploadResult = await uploadImage(file, accessToken!);
-        const newImage = { id: uploadResult.id, url: uploadResult.url };
-        setFormData(prev => ({ ...prev, images: [...prev.images, newImage] }));
-        setImagePreviews(prev => [...prev, uploadResult.url]);
-      } catch (error) {
-        console.error('Failed to upload image:', error);
-        alert(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      if (editingCar) {
+        try {
+          const uploadResult = await uploadImageToCar(editingCar.id, file, accessToken!);
+          setFormData(prev => ({ ...prev, images: [...prev.images, uploadResult] }));
+          setImagePreviews(prev => [...prev, uploadResult.url]);
+        } catch (error) {
+          console.error('Failed to upload image:', error);
+          alert(`Failed to upload image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      } else {
+        setPendingUploads(prev => [...prev, file]);
+        const previewUrl = URL.createObjectURL(file);
+        setImagePreviews(prev => [...prev, previewUrl]);
+        setFormData(prev => ({ ...prev, images: [...prev.images, { id: `temp-${Date.now()}`, url: previewUrl }] }));
       }
     }
   };
@@ -205,7 +217,19 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
     }
   };
 
-  const removeImage = (index: number) => {
+  const removeImage = async (index: number) => {
+    const image = formData.images[index];
+    if (editingCar && image.id && !image.id.startsWith('temp')) {
+      try {
+        await deleteImage(image.id, accessToken!);
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+        alert(`Failed to delete image: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        return;
+      }
+    } else if (!editingCar) {
+      setPendingUploads(prev => prev.filter((_, i) => i !== index));
+    }
     setFormData(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }));
     setImagePreviews(prev => prev.filter((_, i) => i !== index));
   };
@@ -278,6 +302,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
 
   const handleEdit = (car: Car) => {
     setEditingCar(car);
+    setOriginalImages(car.images);
     setFormData({
       brand: car.brand,
       model: car.model,
@@ -294,6 +319,8 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
       images: car.images
     });
     setImagePreviews(car.images.map(img => img.url));
+    setPendingUploads([]);
+    setImagesToDelete([]);
     setIsDialogOpen(true);
   };
 
@@ -392,7 +419,8 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
     };
 
     if (editingCar) {
-      const fullCarData: Car = { ...baseCarData, id: editingCar.id, images: formData.images };
+      const finalImages = formData.images.filter(img => img.id && !img.id.startsWith('temp'));
+      const fullCarData: Car = { ...baseCarData, id: editingCar.id, images: finalImages };
       try {
         const updatedCar = await updateCar(fullCarData, accessToken!);
         const updatedCars = cars.map(car => car.id === editingCar.id ? updatedCar : car);
@@ -404,10 +432,20 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
         return;
       }
     } else {
-      const createCarData = { ...baseCarData, images: formData.images };
+      const createCarData = { ...baseCarData, images: [] };
       try {
         const newCar = await createCar(createCarData, accessToken!);
-        onCarsUpdate([...cars, newCar]);
+        const uploadedImages: { id: string; url: string }[] = [];
+        for (const file of pendingUploads) {
+          try {
+            const uploadResult = await uploadImageToCar(newCar.id, file, accessToken!);
+            uploadedImages.push(uploadResult);
+          } catch (error) {
+            console.error('Failed to upload image for new car:', error);
+          }
+        }
+        const carWithImages = { ...newCar, images: uploadedImages };
+        onCarsUpdate([...cars, carWithImages]);
       } catch (error) {
         console.error('Failed to create car:', error);
         console.error('Error details:', error);
