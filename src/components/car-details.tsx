@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { type Car } from '@/types';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
@@ -32,6 +32,18 @@ export function CarDetails({ cars }: CarDetailsProps) {
   const nextCar = currentIndex < cars.length - 1 ? cars[currentIndex + 1] : null;
 
   const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+
+    setCount(api.scrollSnapList().length);
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on("select", () => setCurrent(api.selectedScrollSnap() + 1));
+  }, [api]);
+
 
   if (!car) {
     return (
@@ -65,25 +77,6 @@ export function CarDetails({ cars }: CarDetailsProps) {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Listings
         </Button>
-
-        {prevCar && (
-          <Button
-            onClick={() => navigate(`/car/${prevCar.id}`)}
-            variant="outline"
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Previous Car
-          </Button>
-        )}
-        {nextCar && (
-          <Button
-            onClick={() => navigate(`/car/${nextCar.id}`)}
-            variant="outline"
-          >
-            Next Car
-            <ChevronRight className="w-4 h-4 mr-2" />
-          </Button>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -118,15 +111,18 @@ export function CarDetails({ cars }: CarDetailsProps) {
               <Button onClick={() => api?.scrollPrev()} variant="outline" size="sm">
                 <ChevronLeft className="w-4 h-4" />
               </Button>
-              <div className="flex gap-2">
+              <div className="flex items-center">
                 {car.images.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => api?.scrollTo(index)}
-                    className={`w-3 h-3 rounded-full transition-colors ${api?.selectedScrollSnap() === index ? 'bg-primary' : 'bg-gray-300'}`}
+                    className={`w-2 h-2 rounded-full transition-colors ${current - 1 === index ? 'bg-primary' : 'bg-gray-300'}`}
                   />
                 ))}
               </div>
+              {count > 0 && (
+                <div className="text-sm text-muted-foreground">{current} / {count}</div>
+              )}
               <Button onClick={() => api?.scrollNext()} variant="outline" size="sm">
                 <ChevronRight className="w-4 h-4" />
               </Button>
