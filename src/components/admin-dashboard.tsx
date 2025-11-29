@@ -219,9 +219,9 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
 
   const removeImage = async (index: number) => {
     const image = formData.images[index];
-    if (editingCar && image.id && !image.id.startsWith('temp')) {
+    if (editingCar && image.id && !String(image.id).startsWith('temp')) {
       try {
-        await deleteImage(image.id, accessToken!);
+        await deleteImage(String(image.id), accessToken!);
       } catch (error) {
         console.error('Failed to delete image:', error);
         alert(`Failed to delete image: ${error instanceof Error ? error.message : 'Unknown error'}`);
