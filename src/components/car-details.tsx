@@ -1,9 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { type Car } from '@/types';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { ContactButtons } from './contact-buttons';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from './ui/carousel';
 import {
   Calendar,
   Fuel,
@@ -29,6 +30,8 @@ export function CarDetails({ cars }: CarDetailsProps) {
   const currentIndex = cars.findIndex(c => c.id == id);
   const prevCar = currentIndex > 0 ? cars[currentIndex - 1] : null;
   const nextCar = currentIndex < cars.length - 1 ? cars[currentIndex + 1] : null;
+
+  const [api, setApi] = useState<CarouselApi>();
 
   if (!car) {
     return (
@@ -87,29 +90,48 @@ export function CarDetails({ cars }: CarDetailsProps) {
         {/* Main Content */}
         <div className="lg:col-span-2">
           {/* Images */}
-          <div className="aspect-video overflow-hidden rounded-lg mb-6">
-            {car.images.length > 0 ? (
-              <Carousel className="w-full h-full">
-                <CarouselContent>
-                  {car.images.map((image) => (
-                    <CarouselItem key={image.id}>
-                      <img
-                        src={image.url}
-                        alt={`${car.brand} ${car.model}`}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-4" />
-                <CarouselNext className="right-4" />
-              </Carousel>
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
-                <span className="text-gray-500">No images available</span>
-              </div>
-            )}
+          <div className="relative aspect-video overflow-hidden rounded-lg mb-6">
+            {car.images.length > 0 ?
+              (<div className="relative">
+                <Carousel setApi={setApi} className="w-full h-full">
+                  <CarouselContent>
+                    {car.images.map((image) => (
+                      <CarouselItem key={image.id}>
+                        <img
+                          src={image.url}
+                          alt={`${car.brand} ${car.model}`}
+                          className="w-full h-full object-cover rounded-lg"
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                </Carousel>
+              </div>) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                  <span className="text-gray-500">No images available</span>
+                </div>
+              )}
           </div>
+
+          {car.images.length > 0 && (
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <Button onClick={() => api?.scrollPrev()} variant="outline" size="sm">
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="flex gap-2">
+                {car.images.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => api?.scrollTo(index)}
+                    className={`w-3 h-3 rounded-full transition-colors ${api?.selectedScrollSnap() === index ? 'bg-primary' : 'bg-gray-300'}`}
+                  />
+                ))}
+              </div>
+              <Button onClick={() => api?.scrollNext()} variant="outline" size="sm">
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
 
           {/* Car Info */}
           <div className="bg-white p-6 rounded-lg shadow-md mb-6">
