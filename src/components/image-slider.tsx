@@ -34,7 +34,7 @@ const sliderImages = [
 */
 
 interface ImageSliderProps {
-  images: ImageSliderType[];
+    images: ImageSliderType[];
 }
 
 export function ImageSlider({ images }: ImageSliderProps) {
@@ -74,37 +74,37 @@ export function ImageSlider({ images }: ImageSliderProps) {
     }, [images.length]);
 
     return (
-        <div style={{position: 'relative', width: '100%', height: '500px', overflow: 'hidden', backgroundColor: '#111827'}}>
-            <Carousel setApi={setApi} style={{width: '100%', height: '100%'}}>
-                <CarouselContent style={{display: 'flex'}}>
+        <div style={{ position: 'relative', width: '100%', height: '500px', overflow: 'hidden', backgroundColor: '#111827' }}>
+            <Carousel setApi={setApi} style={{ width: '100%', height: '100%' }}>
+                <CarouselContent style={{ display: 'flex' }}>
                     {images.map((image, index) => (
-                        <CarouselItem key={index} style={{minWidth: '100%'}}>
-                            <div style={{position: 'relative', width: '100%', height: '500px'}}>
+                        <CarouselItem key={index} style={{ minWidth: '100%' }}>
+                            <div style={{ position: 'relative', width: '100%', height: '500px' }}>
                                 <ImageWithFallback
                                     src={image.url}
                                     alt={image.alt}
-                                    style={{width: '100%', height: '100%', objectFit: 'cover'}}
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />
 
                                 {/* Overlay with gradient */}
-                                <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3), transparent)'}}></div>
+                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.3), transparent)' }}></div>
 
                                 {/* Content overlay */}
-                                <div style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center'}}>
-                                    <div style={{maxWidth: '1280px', margin: 'auto', padding: '0 1.5rem', width: '100%'}}>
-                                        <div style={{maxWidth: '42rem', color: 'white'}}>
-                                            <h2 style={{fontSize: '2.25rem', fontWeight: '700', marginBottom: '1rem'}}>{image.title}</h2>
-                                            <p style={{fontSize: '1.25rem', marginBottom: '2rem', color: '#E5E7EB'}}>{image.description}</p>
-                                            <div style={{display: 'flex', gap: '1rem'}}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center' }}>
+                                    <div style={{ maxWidth: '1280px', margin: 'auto', padding: '0 1.5rem', width: '100%' }}>
+                                        <div style={{ maxWidth: '42rem', color: 'white' }}>
+                                            <h2 style={{ fontSize: '2.25rem', fontWeight: '700', marginBottom: '1rem' }}>{image.title}</h2>
+                                            <p style={{ fontSize: '1.25rem', marginBottom: '2rem', color: '#E5E7EB' }}>{image.description}</p>
+                                            <div style={{ display: 'flex', gap: '1rem' }}>
                                                 <a
                                                     href="#inventory"
-                                                    style={{backgroundColor: '#030213', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block'}}
+                                                    style={{ backgroundColor: '#030213', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block' }}
                                                 >
                                                     View Inventory
                                                 </a>
                                                 <a
                                                     href="#contact"
-                                                    style={{border: '2px solid white', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block'}}
+                                                    style={{ border: '2px solid white', color: 'white', padding: '0.75rem 2rem', borderRadius: '0.5rem', display: 'inline-block' }}
                                                 >
                                                     Contact Us
                                                 </a>
@@ -116,17 +116,17 @@ export function ImageSlider({ images }: ImageSliderProps) {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious style={{left: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white'}} />
-                <CarouselNext style={{right: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white'}} />
+                <CarouselPrevious style={{ left: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }} />
+                <CarouselNext style={{ right: '1rem', backgroundColor: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }} />
             </Carousel>
 
             {/* Slide indicators */}
-            <div style={{position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem'}}>
+            <div style={{ position: 'absolute', bottom: '1.5rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem' }}>
                 {images.map((_, index) => (
                     <button
                         key={index}
                         onClick={() => setCurrentIndex(index)}
-                        style={{width: '0.75rem', height: '0.75rem', borderRadius: '9999px', backgroundColor: index === currentIndex ? 'white' : 'rgba(255,255,255,0.5)'}}
+                        style={{ width: '0.75rem', height: '0.75rem', borderRadius: '9999px', backgroundColor: index === currentIndex ? 'white' : 'rgba(255,255,255,0.5)' }}
                         aria-label={`Go to slide ${index + 1}`}
                     />
                 ))}

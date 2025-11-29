@@ -93,7 +93,7 @@ export function CarDetails({ cars }: CarDetailsProps) {
                         <img
                           src={image.url}
                           alt={`${car.brand} ${car.model}`}
-                          className="w-full h-full object-cover rounded-lg"
+                          className="w-full object-contain rounded-lg"
                         />
                       </CarouselItem>
                     ))}
