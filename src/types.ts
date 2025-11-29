@@ -14,7 +14,7 @@ export interface Car {
   transmission: 'Manual' | 'Automatic';
   bodyType: 'Sedan' | 'SUV' | 'Hatchback' | 'Coupe' | 'Convertible' | 'Pickup';
   color: string;
-  image: string;
+  images: { id: string; url: string }[];
   description: string;
   features: string[];
   location: string;

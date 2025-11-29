@@ -3,6 +3,7 @@ import { type Car } from '@/types';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { ContactButtons } from './contact-buttons';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from './ui/carousel';
 import {
   Calendar,
   Fuel,
@@ -11,7 +12,9 @@ import {
   Palette,
   Settings,
   Car as CarIcon,
-  ArrowLeft
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface CarDetailsProps {
@@ -19,10 +22,13 @@ interface CarDetailsProps {
 }
 
 export function CarDetails({ cars }: CarDetailsProps) {
-   const { id } = useParams<{ id: string }>();
-   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
-   const car = cars.find(c => c.id == id);
+  const car = cars.find(c => c.id == id);
+  const currentIndex = cars.findIndex(c => c.id == id);
+  const prevCar = currentIndex > 0 ? cars[currentIndex - 1] : null;
+  const nextCar = currentIndex < cars.length - 1 ? cars[currentIndex + 1] : null;
 
   if (!car) {
     return (
@@ -48,25 +54,61 @@ export function CarDetails({ cars }: CarDetailsProps) {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <Button
-        onClick={() => navigate('/')}
-        variant="outline"
-        className="mb-6"
-      >
-        <ArrowLeft className="w-4 h-4 mr-2" />
-        Back to Listings
-      </Button>
+      <div className="flex flex-wrap gap-2 mb-6">
+        <Button
+          onClick={() => navigate('/')}
+          variant="outline"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to Listings
+        </Button>
+
+        {prevCar && (
+          <Button
+            onClick={() => navigate(`/car/${prevCar.id}`)}
+            variant="outline"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Previous Car
+          </Button>
+        )}
+        {nextCar && (
+          <Button
+            onClick={() => navigate(`/car/${nextCar.id}`)}
+            variant="outline"
+          >
+            Next Car
+            <ChevronRight className="w-4 h-4 mr-2" />
+          </Button>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          {/* Image */}
+          {/* Images */}
           <div className="aspect-video overflow-hidden rounded-lg mb-6">
-            <img
-              src={car.image}
-              alt={`${car.brand} ${car.model}`}
-              className="w-full h-full object-cover"
-            />
+            {car.images.length > 0 ? (
+              <Carousel className="w-full h-full">
+                <CarouselContent>
+                  {car.images.map((image) => (
+                    <CarouselItem key={image.id}>
+                      <img
+                        src={image.url}
+                        alt={`${car.brand} ${car.model}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-4" />
+                <CarouselNext className="right-4" />
+              </Carousel>
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                <span className="text-gray-500">No images available</span>
+              </div>
+            )}
           </div>
 
           {/* Car Info */}

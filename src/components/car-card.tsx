@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Car } from '../data/cars';
+import { type Car } from '@/types';
 import { Card, CardContent, CardFooter } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -27,12 +27,12 @@ export function CarCard({ car }: CarCardProps) {
     <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="aspect-video overflow-hidden">
         <img
-          src={car.image}
+          src={car.images[0]?.url || '/placeholder-car.jpg'}
           alt={`${car.brand} ${car.model}`}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
       </div>
-      
+
       <CardContent className="p-4">
         <div className="flex justify-between items-start mb-2">
           <div>
