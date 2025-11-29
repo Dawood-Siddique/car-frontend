@@ -419,7 +419,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
     };
 
     if (editingCar) {
-      const finalImages = formData.images.filter(img => img.id && !img.id.startsWith('temp'));
+      const finalImages = formData.images.filter(img => img.id && !String(img.id).startsWith('temp'));
       const fullCarData: Car = { ...baseCarData, id: editingCar.id, images: finalImages };
       try {
         const updatedCar = await updateCar(fullCarData, accessToken!);
