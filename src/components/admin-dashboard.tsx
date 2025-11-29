@@ -755,7 +755,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
 
                   {/* Images Display */}
                   {formData.images.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
                       {formData.images.map((image, index) => (
                         <div key={image.id} className="relative">
                           <img
@@ -767,7 +767,7 @@ export function AdminDashboard({ cars, onCarsUpdate, imageSliders, onImageSlider
                             type="button"
                             variant="destructive"
                             size="sm"
-                            className="absolute top-1 right-1"
+                            className="absolute top-2 right-2"
                             onClick={() => removeImage(index)}
                           >
                             <X className="w-3 h-3" />
