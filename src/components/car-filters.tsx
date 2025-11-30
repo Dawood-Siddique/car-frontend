@@ -10,7 +10,7 @@ interface CarFiltersProps {
 }
 
 export function CarFilters({ cars, onFilterChange }: CarFiltersProps) {
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(true);
   const [filters, setFilters] = useState({
     brand: 'all',
     bodyType: 'all',
