@@ -82,29 +82,40 @@ export function CarDetails({ cars }: CarDetailsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          {/* Images */}
-          <div className="relative aspect-video overflow-hidden rounded-lg mb-6">
-            {car.images.length > 0 ?
-              (<div className="relative">
-                <Carousel setApi={setApi} className="w-full h-full">
-                  <CarouselContent>
-                    {car.images.map((image) => (
-                      <CarouselItem key={image.id}>
-                        <img
-                          src={image.url}
-                          alt={`${car.brand} ${car.model}`}
-                          className="w-full object-contain rounded-lg"
-                        />
-                      </CarouselItem>
-                    ))}
-                  </CarouselContent>
-                </Carousel>
-              </div>) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
-                  <span className="text-gray-500">No images available</span>
-                </div>
-              )}
-          </div>
+          {/* Hidden Carousel for logic */}
+          <Carousel setApi={setApi} className="w-full" style={{ height: 0, overflow: 'hidden' }}>
+            <CarouselContent>
+              {car.images.map((image) => (
+                <CarouselItem key={image.id}>
+                  <img src={image.url} alt="" style={{ width: '100%', height: 'auto' }} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+          </Carousel>
+
+          {/* New Image Module Here */}
+          {car.images.length === 0 && (
+            <div className="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg aspect-video mb-6">
+              <span className="text-gray-500">No images available</span>
+            </div>
+          )}
+          {car.images.length > 0 && current > 0 ? (
+            <div className="mt-4 mb-6" style={{ height: '384px' }}>
+              <img
+                src={car.images[current - 1].url}
+                alt={`Current view: ${car.brand} ${car.model}`}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #e5e7eb'
+                }}
+              />
+            </div>
+          ) : car.images.length > 0 && (
+            <div className="mt-4 mb-6" style={{ height: '384px' }} />
+          )}
 
           {car.images.length > 0 && (
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -112,7 +123,7 @@ export function CarDetails({ cars }: CarDetailsProps) {
                 <ChevronLeft className="w-4 h-4" />
               </Button>
               <div className="flex items-center">
-                {car.images.map((_, index) => (
+                {car.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => api?.scrollTo(index)}
