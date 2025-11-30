@@ -36,6 +36,10 @@ export function CarDetails({ cars }: CarDetailsProps) {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  useEffect(() => {
     if (!api) return;
 
     setCount(api.scrollSnapList().length);
